@@ -622,7 +622,7 @@ WHERE Role = @ROLE
 
 
 -- deleta ator, filme e papel
-CREATE PROCEDURE dbo.spDeleteMovieActActor
+CREATE PROCEDURE spDeleteMovieActActor
 (
 @title VARCHAR(100) 
 )
@@ -638,7 +638,37 @@ DELETE FROM Act WHERE ID_Actor = @ID_Actor;
 DELETE FROM Movie WHERE ID_Movie = @ID_Movie;
 DELETE FROM PrincipalActor WHERE ID_Actor = @ID_Actor;
 
--- atualizar nome do filme
+-- deleta Serie e seus episódios
+
+CREATE PROCEDURE spDeleteSerie
+(
+@title VARCHAR(100) 
+)
+AS
+
+DECLARE @ID_Serie INT 
+
+SELECT  @ID_Serie = ID_Serie FROM Serie WHERE Title LIKE @title+'%'
+
+DELETE FROM Episode WHERE ID_Serie = @ID_Serie;
+DELETE FROM Serie WHERE ID_Serie = @ID_Serie;
+
+-- deletar documentário e produtora
+CREATE PROCEDURE spDeleteDocumentary
+(
+@title VARCHAR(100) 
+)
+AS
+
+DECLARE @ID_Doc INT, @ID_Prod INT 
+
+SELECT  @ID_Doc = ID_Doc,@ID_Prod = ID_Prod  FROM Documentary WHERE Title LIKE @title+'%'
+
+DELETE FROM Documentary WHERE ID_Doc = @ID_Doc;
+DELETE FROM Producer WHERE ID_Prod = @ID_Prod;
+
+
+-- Atualizar título do filme
 
 CREATE PROCEDURE spUpdateTitleMovie
 (
@@ -654,6 +684,42 @@ SELECT  @ID_Movie = ID_Movie FROM Movie WHERE Title LIKE @title+'%'
 UPDATE Movie 
 SET Title = @newTitle 
 WHERE ID_Movie = @ID_Movie;
+
+-- Atualizar título da série
+
+CREATE PROCEDURE spUpdateTitleSerie
+(
+@title VARCHAR(100),
+@newTitle VARCHAR(100) 
+)
+AS
+
+DECLARE @ID_Serie INT
+
+SELECT  @ID_Serie = ID_Serie FROM Serie WHERE Title LIKE @title+'%'
+
+UPDATE Serie 
+SET Title = @newTitle 
+WHERE ID_Serie = @ID_Serie;
+
+
+-- Atualizar título do Documentário
+
+CREATE PROCEDURE spUpdateTitleDocumentary
+(
+@title VARCHAR(100),
+@newTitle VARCHAR(100) 
+)
+AS
+
+DECLARE @ID_Doc INT
+
+SELECT  @ID_Doc = ID_Doc FROM Documentary WHERE Title LIKE @title+'%'
+
+UPDATE Documentary 
+SET Title = @newTitle 
+WHERE ID_Doc = @ID_Doc;
+
 
 -- Insere Episódio
 
